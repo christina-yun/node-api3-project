@@ -35,12 +35,25 @@ async function validateUser(req, res, next) {
     next();
   }
 }
+const postSchema = yup.object().shape({
+  text: yup
+    .string()
+    .trim()
+    .required('missing required text field')
+    .min(1, 'min 1 char')
+})
+async function validatePost(req, res, next) {
+  try{
+    const validated = await postSchema.validate(req.body)
 
-function validatePost(req, res, next) {
-  // DO YOUR MAGIC
+    req.body = validated;
+  next();
+  }
+  catch(err){
+    next({ status: 400, message: 'missing required text field'})
+  }
 }
 
-// do not forget to expose these functions to other modules
 module.exports = {
   logger,
   validateUserId,
