@@ -40,8 +40,6 @@ router.put('/:id', validateUserId, validateUser, (req, res, next) => {
 });
 
 router.delete('/:id', validateUserId, async (req, res, next) => {
-  // RETURN THE FRESHLY DELETED USER OBJECT
-  // this needs a middleware to verify user id
   const removedUser = await Users.getById(req.params.id)
   Users.remove(req.params.id)
     .then(() => {
@@ -50,9 +48,14 @@ router.delete('/:id', validateUserId, async (req, res, next) => {
     .catch(next)
 });
 
-router.get('/:id/posts', (req, res) => {
+router.get('/:id/posts', validateUserId, (req, res, next) => {
   // RETURN THE ARRAY OF USER POSTS
   // this needs a middleware to verify user id
+  Users.getUserPosts(req.params.id)
+    .then(posts => {
+      res.status(200).json(posts);
+    })
+    .catch(next)
 });
 
 router.post('/:id/posts', (req, res) => {
