@@ -47,7 +47,7 @@ async function validatePost(req, res, next) {
     const validated = await postSchema.validate(req.body)
 
     req.body = validated;
-  next();
+    next();
   }
   catch(err){
     next({ status: 400, message: 'missing required text field'})
